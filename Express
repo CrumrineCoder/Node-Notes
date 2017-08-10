@@ -1,0 +1,49 @@
+Express.JS
+ExpressWorks
+git clone https://github.com/FreeCodeCamp/fcc-expressworks.git && chmod 744 fcc-expressworks/setup.sh && fcc-expressworks/setup.sh && source ~/.profile
+Installs the tutorial
+expressworks
+Start the Tutorial
+Hello World
+ var express = require('express')
+ var app = express()
+ app.get('/home', function(req, res) {
+      res.end('Hello World!')
+ })
+ app.listen(process.argv[2]);
+On receiving ‘/home’, we end the app with ‘hello world’. This is how you set up a HTTP server with Express. 
+app.get() routes HTTP GET requests to the specified path with the specified callback functions.
+Static
+ var express = require('express')
+ var app = express()
+ app.use(express.static(process.argv[3]||path.join(__dirname, 'public')));
+ app.listen(process.argv[2]);
+This gets an index HTML file and returns it. 
+app.use() adds middleware to the Express Server, which basically makes thing go async instead of sync, I think. 
+Express.static makes the following folder static. 
+Path.join creates a file path by chaining together variables, _dirname is the local Node variable of the local folder, and ‘public’ is the name of the folder
+Jade
+var express = require('express');
+var app = express();
+var path = require('path');
+app.set('views', process.argv[3]);
+app.set('view engine',  "jade");
+app.get('/home', function(req, res) {   
+res.render('index', {date: new Date().toDateString()})
+});
+app.listen(process.argv[2]);
+app.set() is used twice here. The first time, it sets the ‘get’ of views to be filepath provided. The second time, the view engine is set to “jade” since it’s a template and something happens behind the scenes with res.render, which takes a template name and a presenter data. 
+Forms
+ var express = require('express');
+ var app = express();
+ var path = require('path');
+ var bodyParser = require('body-parser');
+ app.use(bodyParser.urlencoded({
+   extended: false
+ }))
+ app.post('/form', function(req, res) {
+   res.end(req.body.str.split('').reverse().join(''));
+ });
+ app.listen(process.argv[2]);
+
+bodyParser allows us to parse a HTML form. app.use(...) here is adding middleware that will do the steps in the processing. I think it’s like you’re 
