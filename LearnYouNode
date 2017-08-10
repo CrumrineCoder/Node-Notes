@@ -1,0 +1,204 @@
+Learn You Node
+Hello World
+You can make a js file and write javascript in it! Console.log(“hello world”); 
+Babysteps
+Process.argv will return all arguments passed as an array, the first 2 being ‘node’ and the path to the js file. Process.argv[2] gets the first argument passed in like so node file.js 1 2 3 would return 1 on process.argv[2]. 
+My first I/O
+ var fs = require('fs') will load the filesystem module. 
+Var buf = fs.readFileSync(process.argv[2]).toString(); will make a variable ‘buf’ that stores all of the text in a file to a string (process.argv[2] is here because it’s what was inputed, but a test file can be used in its place if you have the path)
+My first async I/O
+
+var fs = require('fs');
+var lineNumber;
+function countNewLines(callback) {
+  fs.readFile(process.argv[2], function doneReading(err, fileContents) {
+    lineNumber = fileContents.toString().split('\n').length;
+    callback();
+  })
+}
+function logMyNumber() {
+  console.log(lineNumber-1);
+}
+countNewLines(logMyNumber);
+
+The previous I/O was synchronous as it ran from top to bottom, but with async things like fs get queued to run. With this callback we can make it synchronous in that countNewLines gets run and then after it gets run logMyNumber runs. fs.readFile is async while fs.readFileSync is synchronous.
+Filtered JS
+
+var fs = require('fs');
+var arr = [];
+function countFiles(callback){
+  fs.readdir(process.argv[2], function doneReading(err, fileContents){
+     fileContents = fileContents.filter(function(file){
+       return file.indexOf("." + process.argv[3]) !== -1; 
+     })
+     arr = fileContents.slice(0);
+    callback();
+  });
+}   
+function logFiles(){
+  arr.forEach(function(item){
+    console.log(item);
+  })
+}
+  countFiles(logFiles);
+
+This reads through a directory and gets all filenames that end with a certain extension. 
+
+The ‘Official Solution’
+var fs = require('fs');
+var path = require ('path');
+var folder = process.argv[2];
+var ext = "." + process.argv[3];
+fs.readdir(folder, function finishReading(err, files){
+  if(err) 
+     console.log("Error");
+  files.forEach(function(file){
+     if(path.extname(file) == ext){
+       console.log(file);
+     }
+  })
+})
+ var path = require('path') will get the path module for use. 
+
+path.extname(file) will return the extension name, for example file.js would return ‘.js’.
+
+Making it Modular
+
+The two files here show how to do modular programming. 
+file.js
+var dt = require('./mymodule')
+var folder = process.argv[2];
+var ext = process.argv[3];
+var fs = require('fs');
+function printFile(err, data){
+  if(err){
+    Return console.log(err);
+  } else {
+    console.log(data);
+  }
+}
+dt(folder, ext, printFile);
+mymodule.js
+module.exports = function (directory, fileName, callback){
+var fs = require('fs');
+var path = require ('path');
+fileName = "." + fileName; 
+fs.readdir(directory, function finishReading(err, files){
+  if(err){
+      callback(err)
+  }
+      files.forEach(function(file){
+         if(path.extname(file) == fileName){
+           callback(null, file);
+         }
+       })
+  
+})
+}
+HTTP Client
+var ht = require('http'); 
+ht.get(process.argv[2], function callback(response){
+   response.on("data", function (data) { 
+    console.log(data.toString());
+   });
+});
+Takes a request to a URL and prints out all of the Strings
+Collect all data from a HTTP get
+var ht = require('http'); 
+var arr = [];
+ht.get(process.argv[2], function callback(response){
+   response.on("data", function (data) { 
+     arr.push(data.toString());
+   });
+  response.on("end", function (data) { 
+     arr = arr.join("");
+     console.log(arr.length);
+     console.log(arr);
+   });
+});
+ASYNC HTTP gets
+// three GETS have to be prepared and done one after another, which they won't naturally do
+var ht = require('http'); 
+var arr = [];
+var i = 2; 
+function getFromURL(URL){
+  ht.get(URL, function callback(response){
+     response.on("data", function (data) { 
+       arr.push(data.toString());
+     });
+    response.on("end", function (data) { 
+       arr = arr.join("");
+       console.log(arr);
+       if(i < process.argv.length-1){
+         arr = [];
+         i++;
+         getFromURL(process.argv[i]);
+       }
+     });
+  });
+}
+getFromURL(process.argv[i]);
+
+Time Server 
+var date=new Date();
+function zeroPad(theDate){
+  if(theDate <= 10){
+    return "0" + theDate; 
+  }
+  else {
+    return theDate;
+  }
+}
+var todayDate = date.getFullYear() + "-" + zeroPad(date.getMonth()  + 1) + "-" + zeroPad(date.getDate()) + " " + zeroPad(date.getHours()) + ":" + zeroPad(date.getMinutes());
+var net = require('net');
+var server = net.createServer(function listener(socket){
+  socket.write(todayDate);
+  socket.end();
+});
+  server.listen(parseInt(process.argv[2]));
+HTTP File Server
+var http = require('http');
+var fs = require('fs');
+var server = http.createServer(function (request, respond){
+(fs.createReadStream(process.argv[3])).pipe(respond);
+});
+server.listen(process.argv[2]);
+How to create a http server and return a fileStream to the request. 
+HTTP UPPERCASER
+var http = require('http');
+var map = require('through2-map');
+var server = http.createServer(function (request, respond){
+  if (request.method != 'POST') 
+      return respond.end('Not a POST reques');
+  request.pipe(map(function (data) {
+     return data.toString().toUpperCase();
+  })).pipe(respond);
+});
+server.listen(process.argv[2]);
+Request.pipe takes data from request and applies the function inside to all of it through the map function, and then that gets piped to the response.
+HTTP JSON API server
+var http = require('http');
+var url = require('url');
+var date = new Date();
+var server = http.createServer(function (req, res){
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  if(req.method != 'GET'){
+    return res.end('Not a GET request');
+  }
+  var newJson = {};
+    var json1 = url.parse(req.url, true); 
+    if(json1.pathname =='/api/parsetime'){
+     newJson.hour = date.getHours();
+     newJson.minute = date.getMinutes();
+     newJson.second = date.getSeconds();
+      return res.end(JSON.stringify(newJson));
+    }
+    else if (json1.pathname == '/api/unixtime'){
+      newJson.unixtime = date.getTime();
+      return res.end(JSON.stringify(newJson));
+    }
+    res.end();
+});
+server.listen(process.argv[2]);
+Res.end ends the http server, it’s like break. 
+url.parse() allows us to take in the API that might’ve been called as it’s saved as a JSON object. 
