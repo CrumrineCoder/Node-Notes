@@ -1,0 +1,34 @@
+NPM
+Setting up a Directory
+
+Mkdir myapp to make a directory at ‘myapp’, and then 
+Cd myapp to navigate into it
+Npm init to start up the dev environment
+Login
+Npm whoami to see who I’m logged in as
+Npm adduser to add an account
+Start a Project
+Npm init --scope=<username> will create a package.JSON file under whatever <username> is replaced with
+After the initial steps, use npm install <pkg> --save to install a package and save as a dependency of the packaged json file. 
+Git init will turn the directory as a git repository
+Install a Module
+Npm install <module name> will download a module / dependency from a registry and are unpacked in the ‘node_modules’ folder, the example being ‘@linclark/pkg’
+ Listing Dependencies
+Npm ls lists out the other dependencies are in a repository. When installing a dependency, use --save at the end of it so it will mark it as a dependency
+Npm test
+Change the test in the package.json so it doesn’t give an error
+Package Necessities
+Add a readme.md file, change the description, and in the package.json file add a “repository” key with a URL to the repoistory
+NPM publish
+Npm publish, pretty self explanatory. 
+Version
+1.2.3.
+The 1 is for major changes, the 2 is for minor changes, the 3 is for patches
+Npm version will update the version number, which will update the npm publish’s version number that needs to be ran right after it
+Dist-tag
+Npm dist-tag add <pkg@version> <tag> will mark a package as a certain tag. For example, npm dist-tag add fcc@1.0.1 latest will make version 1.0.1 of the fcc package the latest one. 
+Outdated & update
+Npm update @linclark/pkg updates the linclark package. 
+Npm outdated shows all packages that are not updated.
+Rm
+Npm rm --save will remove all dependencies. Have to update the package.json file. 
