@@ -19,7 +19,7 @@ Static
  app.use(express.static(process.argv[3]||path.join(__dirname, 'public')));
  app.listen(process.argv[2]);
 This gets an index HTML file and returns it. 
-app.use() adds middleware to the Express Server, which basically makes thing go async instead of sync, I think. 
+app.use() adds middleware to the Express Server, which basically makes thing go async instead of sync, I think. app.use(express.static…) works together to make the folder static and then serve it to the browser without further instruction. 
 Express.static makes the following folder static. 
 Path.join creates a file path by chaining together variables, _dirname is the local Node variable of the local folder, and ‘public’ is the name of the folder
 Jade
@@ -46,4 +46,22 @@ Forms
  });
  app.listen(process.argv[2]);
 
-bodyParser allows us to parse a HTML form. app.use(...) here is adding middleware that will do the steps in the processing. I think it’s like you’re 
+bodyParser allows us to parse a HTML form. app.use(...) here is adding middleware that will do the steps in the processing. I think of the app.use as you’re adding in a blackbox to your code from that you don’t know how it works, but it does. 
+app.post() works like app.GET but it works like a POST. 
+Stylish CSS
+var express = require('express');
+var app = express()
+app.use(require('stylus').middleware(process.argv[3]));
+app.use(express.static(process.argv[3]));
+app.listen(process.argv[2])
+This is applying a style to the entire HTML and then serving it. Very simple. So simple that I misunderstood it completely
+Param Pam Pam
+var express = require('express');
+var app = express()
+app.put('/message/:id', function (req, res){
+   res.send(require('crypto').createHash('sha1').update(new Date().toDateString() + req.param.id).digest('hex'));
+});
+
+app.listen(process.argv[2])
+App.put takes in a put request, obviously.
+Req.param.x can be used to get a variable out of the request. . 
