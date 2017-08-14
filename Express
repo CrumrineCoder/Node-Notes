@@ -65,3 +65,27 @@ app.put('/message/:id', function (req, res){
 app.listen(process.argv[2])
 App.put takes in a put request, obviously.
 Req.param.x can be used to get a variable out of the request. . 
+
+Query
+var express = require('express');
+var app = express();
+app.get('/search', function (req, res) {
+  var query = req.query;
+  res.send(query);
+});
+app.listen(process.argv[2]);
+To get the query, just simple get req.query
+JSON ME
+var fs = require('fs');
+var express = require('express');
+var app = express();
+app.get('/books', function(request, response) {
+fs.readFile(process.argv[3], function(error, data) {
+if (error) {
+console.log(error);
+}
+response.send(JSON.stringify(JSON.parse(data)));
+});
+});
+app.listen(process.argv[2]);
+How to take a file, converts it to JSON, and then outputs it to the user. 
