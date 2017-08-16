@@ -1,0 +1,4 @@
+MongoDB
+Learnyoumongo
+
+So mongo has to be installed, and then the PATH in the environmental variables has to be changed to the bin folder inside C→ Program Files → MongoDB 
