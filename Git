@@ -1,0 +1,39 @@
+Git
+Git.It
+Repository
+From terminal:
+Mkdir ___
+Cd ___
+Git init
+To make a repository
+Commit  to it
+Git status  shows the changes since the last  commit
+Git add ___ will add that file to the pending changes
+Git commit -m “___” will commit all pending changes to the maser branch
+Personal Info & Githubbin’
+Git config --global user.name “____”
+Git config  --global user.username “___”
+Git config --global user.email “___”
+All are used to connect to the github. 
+Remote Control
+git remote add origin <URLFROMGITHUB> allows you to connect the local repository to the remote one
+git push origin master will push all changes to the remote repository
+Forking
+Cd .. leaves the local repository
+git clone <URLFROMGITHUB> will create a clone of a repository on github
+Cd <__> into it
+git remote add upstream <URLFROMGITHUB> will pull any changes from the original repository into the local
+Branching
+git branch <BRANCHNAME> will create a branch of a repository
+git checkout <BRANCHNAME> checkout works almost exactly like cd, but it’s for branches
+git push origin <BRANCHNAME> to commit the branch back to the master.
+Adding other collaborators
+On the github page, go to settings, collaborators, and add em
+Pulling in from collaborators
+git pull <REMOTENAME> <BRANCHNAME> will pull in from collaborators
+Making a pull request
+All of it is done on Github, doesn’t really need explanation
+Merge Locally
+git merge <BRANCHNAME>
+git branch -d <BRANCHNAME>
+This will merge in a branch to the master one, and then delete that branch. Don’t forget to pull upstream!
