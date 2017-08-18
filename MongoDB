@@ -1,4 +1,158 @@
 MongoDB
 Learnyoumongo
 
+MongoD
 So mongo has to be installed, and then the PATH in the environmental variables has to be changed to the bin folder inside C→ Program Files → MongoDB 
+Connect
+In the base folder of C, make a folder named ‘data’, and then inside that make one named ‘db’
+Run in a terminal mongod --port 27017
+Run another terminal, download mongodb (for the first time?), and just writing learnyoumongo verify got it to connect.  
+Find
+var mongo = require('mongodb').MongoClient;
+var url = 'mongodb://localhost:27017/learnyoumongo';
+var age = parseInt(process.argv[2]); 
+mongo.connect(url, function(err, db){
+	if(err) throw err
+	
+	var collection = db.collection('parrots');
+    collection.find({
+		age:{
+			$gt: age
+		}
+	}).toArray(function(err, documents){
+		if(err) throw err
+		console.log(documents)
+		db.close()
+	})
+});
+var mongo = require('mongodb').MongoClient; works like ‘fs’ require
+var url = 'mongodb://localhost:27017/learnyoumongo' this is the URL we are connecting to
+var collection = db.collection('parrots'); parrots is the database name we are connecting to
+age:{$gt: age} if there is anything greater than age, this finds it
+The last part this logs anything that passed  the argument in the ‘age’ thing, which will be known as documents. db.close() is necessary or the entire thing crashes down
+Find Project
+var mongo = require('mongodb').MongoClient;
+var url = 'mongodb://localhost:27017/learnyoumongo';
+var age = parseInt(process.argv[2]); 
+mongo.connect(url, function(err, db){
+	if(err) throw err
+	
+	var collection = db.collection('parrots');
+    collection.find({
+		age:{
+			$gt: age
+		}
+	}, {name: 1, age: 1, _id: 0}).toArray(function(err, documents){
+		if(err) throw err
+		console.log(documents)
+		db.close()
+	})
+});
+Name:1 means that documents will pass on name, but _id: 0 means that documents will not pass on _id. 
+Insert
+var url = 'mongodb://localhost:27017/learnyoumongo';
+var mongo = require('mongodb').MongoClient
+var firstName = process.argv[2]
+var lastName = process.argv[3]
+var doc = {
+  firstName: firstName
+, lastName: lastName
+}
+mongo.connect(url, function(err, db){
+	if(err) throw err
+	var collection = db.collection('docs');
+    collection.insert(doc, function(err, data){
+		if(err) throw err
+		console.log(JSON.stringify(doc))
+		db.close();
+	})
+})
+.insert() here will put the ‘doc’ JSON document into the ‘docs’ collection.
+Update
+
+var url = 'mongodb://localhost:27017/learnyoumongo';
+var mongo = require('mongodb').MongoClient
+mongo.connect(url, function(err, db){
+	if(err) throw err
+	var collection = db.collection('users');
+    collection.update(
+	{
+		name: "Tina"
+	},
+	{
+		$set:{
+			age: 40
+		}
+	}, function(err, data){
+		if(err)
+			return console.log(err)
+		db.close()
+	})
+	
+})
+.update() will take in the first argument the parameters to find what to update, and the second will be what to change with $set.
+Remove
+var url = 'mongodb://localhost:27017/learnyoumongo';
+var mongo = require('mongodb').MongoClient
+
+mongo.connect(url, function(err, db){
+	if(err) throw err
+	var collection = db.collection(process.argv[3]);
+    collection.remove(
+	{
+		_id: process.argv[4]
+	},
+	 function(err, data){
+		if(err)
+			return console.log(err)
+		db.close()
+	})
+	
+})
+.remove() will remove whatever document matches the query.
+Count
+
+var url = 'mongodb://localhost:27017/learnyoumongo';
+var mongo = require('mongodb').MongoClient
+var age = parseInt(process.argv[2]); 
+mongo.connect(url, function(err, db){
+	if(err) throw err
+	var collection = db.collection('parrots');
+	collection.count(
+	{
+		age:{
+			$gt: age
+		}
+	},function(err, documents){
+		if(err)
+			throw err
+		console.log(documents)
+		db.close()
+	})
+})
+.count() will count all documents that match the first argument, and then it will return the total count with the second argument. 
+Aggregate
+var url = 'mongodb://localhost:27017/learnyoumongo';
+var mongo = require('mongodb').MongoClient
+var age = parseInt(process.argv[2]); 
+mongo.connect(url, function(err, db){
+	if(err) throw err
+	var collection = db.collection('prices');
+	collection.aggregate(
+		[
+		{ $match: { size: process.argv[2]} },
+		{ $group: {
+			_id: 'prices',
+			prices:{
+				$avg: '$price'
+			}
+		}}
+		]).toArray(function(err,results){
+			if(err) throw err
+			var results = Number(results[0].prices).toFixed(2)
+			console.log(results)
+			db.close()
+		})
+})
+.aggregate() will run through all of the documents that match a parameter, and then will group then into a JSON with an id and then the key with  the whatever value. We averaged here, but it can be done differently. 
+Number().toFixed(2) will take whatever’s inside Number and return as the number to two decimal places. 
